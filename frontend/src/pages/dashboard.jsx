@@ -2,9 +2,8 @@ import {useState ,useEffect} from 'react';
 import axios from 'axios';
 import { RequestPage } from '../components/requestPage'
 import { Toast } from '../components/toast'
-import { fetchPendingRequest } from '../static/pendingRequests';
+import { fetchPendingRequest } from '../utils/pendingRequests';
 import { ReviewScreen } from '../components/reviewScreen'
-import { Profile } from '../pages/profile.jsx'
 
 export function Dashboard({user, setActive, setUser}){
 

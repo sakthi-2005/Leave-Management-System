@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchPendingRequest } from '../static/pendingRequests'
+import { fetchPendingRequest } from '../utils/pendingRequests'
 import { ReviewScreen } from '../components/reviewScreen';
 
 

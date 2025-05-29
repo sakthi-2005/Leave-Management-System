@@ -11,8 +11,11 @@ router.post('/login', async (req, res) => {
     if (rows.length === 0) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
+    if(rows.isAdmin){
+      res.json({ user: { id: rows[0].id, email: rows[0].email, role: rows[0].role , isAdmin: rows[0].isAdmin} })
+    }
 
-    res.json({ user: { id: rows[0].id, email: rows[0].email, role: rows[0].role } });
+    res.json({ user: { id: rows[0].id, email: rows[0].email, role: rows[0].role ,isAdmin: rows[0].isAdmin} });
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: 'Server error', error: err });

@@ -1,15 +1,36 @@
-const mysql = require('mysql2');
+const { DataSource } = require('typeorm') ;
+const dotenv = require('dotenv') ;
+const { User } = require('../entities/User') ;
+const { LeaveType } = require('../entities/LeaveType') ;
+const { LeaveBalance } = require('../entities/LeaveBalance') ;
+const { LeaveRequest } = require('../entities/LeaveRequest') ;
+const { Holidays } = require('../entities/Holidays') ;
+const { Positions } = require('../entities/Positions') ;
 
-const pool = mysql.createPool({
-  host: '127.0.0.1',         // Replace with your MySQL host
-  user: 'sakthi',              // Replace with your MySQL user
-  password: 'sakthi',              // Replace with your MySQL password
-  database: 'leave_request_system',  // Replace with your database name
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+dotenv.config();
+
+const AppDataSource = new DataSource({
+  type: 'mysql',
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT || '3306'),
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  synchronize: false,
+  logging: false, 
+  entities: [User, LeaveType, LeaveBalance, LeaveRequest , Holidays , Positions],
+  migrations: ['src/migrations/**/*.ts'],
 });
 
-const promisePool = pool.promise();
+// Initialize the database connection
+const initializeDatabase = async () => {
+  try {
+    await AppDataSource.initialize();
+    console.log('Database connection successfully established');
+  } catch (error) {
+    console.error('Error during database initialization:', error);
+    process.exit(1);
+  }
+};
 
-module.exports = promisePool;
+module.exports = { AppDataSource, initializeDatabase };

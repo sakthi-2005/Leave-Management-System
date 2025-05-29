@@ -1,0 +1,30 @@
+// frontend/src/pages/Login.js
+import { useState } from 'react';
+import axios from 'axios';
+
+export default function Login({ setUser }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post('http://localhost:5000/api/login', { email, password });
+  
+      localStorage.setItem('user', JSON.stringify(res.data.user)); // ✅ persist login
+      setUser(res.data.user); // ✅ inform App
+    } catch (err) {
+      alert('Login failed: ' + err.response?.data?.message);
+    }
+  };
+  
+
+  return (
+    <form onSubmit={handleLogin}>
+      <h2>Login</h2>
+      <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" required />
+      <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+  );
+}

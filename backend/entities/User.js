@@ -24,7 +24,7 @@ const User = new EntitySchema({
       name: "role_id",
       type: Number,
     },
-    reporting_manager_d: {
+    reporting_manager_id: {
       name: "manager_id",
       type: Number,
       nullable: true, 
@@ -83,4 +83,4 @@ const User = new EntitySchema({
   },
 });
 
-module.exports = { User };
+module.exports = User;

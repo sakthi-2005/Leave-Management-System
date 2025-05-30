@@ -1,11 +1,11 @@
 const { DataSource } = require('typeorm') ;
 const dotenv = require('dotenv') ;
-const { User } = require('../entities/User') ;
-const { LeaveType } = require('../entities/LeaveType') ;
-const { LeaveBalance } = require('../entities/LeaveBalance') ;
-const { LeaveRequest } = require('../entities/LeaveRequest') ;
-const { Holidays } = require('../entities/Holidays') ;
-const { Positions } = require('../entities/Positions') ;
+const { User } = require('./entities/User') ;
+const { LeaveType } = require('./entities/LeaveType') ;
+const { LeaveBalance } = require('./entities/LeaveBalance') ;
+const { LeaveRequest } = require('./entities/LeaveRequest') ;
+const { Holidays } = require('./entities/Holidays') ;
+const { Positions } = require('./entities/Positions') ;
 
 dotenv.config();
 
@@ -33,4 +33,11 @@ const initializeDatabase = async () => {
   }
 };
 
-module.exports = { AppDataSource, initializeDatabase };
+const UserRepo = AppDataSource.getRepository(User);
+const LeaveTypeRepo = AppDataSource.getRepository(LeaveType);
+const LeaveBalanceRepo = AppDataSource.getRepository(LeaveBalance);
+const LeaveRequestRepo = AppDataSource.getRepository(LeaveRequest);
+const HolidaysRepo = AppDataSource.getRepository(Holidays);
+const PositionsRepo = AppDataSource.getRepository(Positions);
+
+module.exports = { initializeDatabase , UserRepo, LeaveTypeRepo, LeaveBalanceRepo, LeaveRequestRepo, HolidaysRepo, PositionsRepo };

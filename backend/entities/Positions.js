@@ -32,3 +32,5 @@ const Position = new EntitySchema({
         }
     }
     });
+
+module.exports = Position;

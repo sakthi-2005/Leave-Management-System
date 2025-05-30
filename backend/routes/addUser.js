@@ -6,5 +6,3 @@ const queue = require('../utils/queue')
 router.post('/addUser', queue);
 
 module.exports = router;
-
-

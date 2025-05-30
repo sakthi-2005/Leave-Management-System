@@ -46,3 +46,5 @@ const LeaveType = new EntitySchema({
         },
     },
     });
+
+module.exports = LeaveType;

@@ -5,28 +5,29 @@ const path = require('path');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 
-const authRoutes = require('./route/auth');
-const leaveBalanceRoutes = require('./route/leaveBalance');
-const reportees = require('./route/reportees');
-const holidays = require('./route/holidays');
-const requestleave = require('./route/request');
-const pendingRequest = require('./route/pendingrequest');
-const calenderLeave = require('./route/calendarLeaves');
-const history = require('./route/history');
-const acceptRequest = require('./route/acceptRequest');
-const rejectRequest = require('./route/rejectRequest');
-const addUser = require('./route/addUser');
-const addLeave = require('./route/addLeave');
-const allUser = require('./route/allUsers');
-const allLeave = require('./route/allLeaves');
-const userDetails = require('./route/userDetails');
-const updateUser = require('./route/updateUser');
-const updateLeave = require('./route/updateLeave');
-const cancelRequest = require('./route/cancelRequest');
-const deleteLeave = require('./route/deleteLeave');
-const deleteuser = require('./route/deleteUser');
+const authRoutes = require('./routes/auth');
+const leaveBalanceRoutes = require('./routes/leaveBalance');
+const reportees = require('./routes/reportees');
+const holidays = require('./routes/holidays');
+const requestleave = require('./routes/request');
+const pendingRequest = require('./routes/pendingrequest');
+const calenderLeave = require('./routes/calendarLeaves');
+const history = require('./routes/history');
+const acceptRequest = require('./routes/acceptRequest');
+const rejectRequest = require('./routes/rejectRequest');
+const addUser = require('./routes/addUser');
+const addLeave = require('./routes/addLeave');
+const allUser = require('./routes/allUsers');
+const allLeave = require('./routes/allLeaves');
+const userDetails = require('./routes/userDetails');
+const updateUser = require('./routes/updateUser');
+const updateLeave = require('./routes/updateLeave');
+const cancelRequest = require('./routes/cancelRequest');
+const deleteLeave = require('./routes/deleteLeave');
+const deleteuser = require('./routes/deleteUser');
 
-const db = require('./db');
+const {initializeDatabase} = require('./db');
+initializeDatabase();
 
 dotenv.config(); // Load environment variables
 
@@ -39,22 +40,22 @@ app.use(bodyParser.json()); // Parse JSON bodies
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
 // // Database Schema Execution
-const executeSchema = async () => {
-  try {
-    const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
-    const queries = schema.split(';').filter(q => q.trim());
+// const executeSchema = async () => {
+//   try {
+//     const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
+//     const queries = schema.split(';').filter(q => q.trim());
 
-    for (let query of queries) {
-      await db.query(query);
-    }
+//     for (let query of queries) {
+//       await db.query(query);
+//     }
 
-    console.log('Database schema created or verified successfully.');
-  } catch (err) {
-    console.error('Error executing schema.sql:', err);
-  }
-};
+//     console.log('Database schema created or verified successfully.');
+//   } catch (err) {
+//     console.error('Error executing schema.sql:', err);
+//   }
+// };
 
-executeSchema();
+// executeSchema();
 
 // Routes
 app.use('/api', authRoutes);

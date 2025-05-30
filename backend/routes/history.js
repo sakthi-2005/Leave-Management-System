@@ -8,21 +8,37 @@ router.get('/history', async (req, res) => {
   if (!userId) return res.status(400).json({ error: 'Missing userId' });
 
   try {
-    const [rows] = await db.query(` SELECT 
-    lr.*, 
-    approver.name AS approved_by_name,
-    rejector.name AS rejected_by_name,
-    lt.name as leaveType
-  FROM leave_requests lr
-  LEFT JOIN users approver ON lr.approved_by = approver.id
-  LEFT JOIN users rejector ON lr.rejected_by = rejector.id
-  JOIN leave_types lt ON lr.leave_type_id = lt.id
-  WHERE lr.user_id = ?`,[userId]);
+
+    const rows = await db.LeaveRequestRepo
+                          .createQueryBuilder('lr')
+                          .leftJoinAndSelect('lr.approvedByUser', 'approver')
+                          .leftJoinAndSelect('lr.rejectedByUser', 'rejector') 
+                          .innerJoinAndSelect('lr.leaveType', 'lt')
+                          .where('lr.user_id = :userId', { userId })
+                          .select([
+                            'lr',
+                            'approver.name',
+                            'rejector.name',
+                            'lt.name',
+                          ])
+                          .getRawMany();
+
+
+  //   const [rows] = await db.query(` SELECT 
+  //   lr.*, 
+  //   approver.name AS approved_by_name,
+  //   rejector.name AS rejected_by_name,
+  //   lt.name as leaveType
+  // FROM leave_requests lr
+  // LEFT JOIN users approver ON lr.approved_by = approver.id
+  // LEFT JOIN users rejector ON lr.rejected_by = rejector.id
+  // JOIN leave_types lt ON lr.leave_type_id = lt.id
+  // WHERE lr.user_id = ?`,[userId]);
     
     res.json({ history: rows });
   } catch (err) {
     console.log(err)
-    res.status(500).json({ error: 'Failed to fetch leave balance' });
+    res.status(500).json({ error: 'Failed to fetch history' });
   }
 });
 

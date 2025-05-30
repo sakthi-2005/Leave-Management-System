@@ -7,15 +7,13 @@ router.post('/login', async (req, res) => {
 
 
   try {
-    const [rows] = await db.query('SELECT * FROM users WHERE email = ? AND password = ?', [email, password]);
-    if (rows.length === 0) {
+    const rows = await userRepo.findOneBy({ email, password });
+
+    if (!rows) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
-    if(rows.isAdmin){
-      res.json({ user: { id: rows[0].id, email: rows[0].email, role: rows[0].role , isAdmin: rows[0].isAdmin} })
-    }
 
-    res.json({ user: { id: rows[0].id, email: rows[0].email, role: rows[0].role ,isAdmin: rows[0].isAdmin} });
+    res.json({ user: { id: rows.id, email: rows.email ,isAdmin: rows.isAdmin} });
   } catch (err) {
     console.log(err)
     res.status(500).json({ message: 'Server error', error: err });

@@ -31,7 +31,6 @@ function UserModal({ user, onClose, onSave, onDelete, users}) {
 
   const handleSubmit = () => {
     if (user) {
-      console.log({...formData,id:user.id})
       onSave({...formData,id:user.id}, 'update');
     }
     else {

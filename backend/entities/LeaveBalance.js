@@ -49,3 +49,5 @@ const LeaveBalance = new EntitySchema({
 
     },
 });
+
+module.exports = LeaveBalance;

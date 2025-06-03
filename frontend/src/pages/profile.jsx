@@ -24,12 +24,17 @@ export function Profile({setUser}){
       setOriginalPassword(password);
       setIsEditingPassword(false);
       setPasswordVisible(false);
+      
       await axios
-        .patch('http://localhost:5000/api/admin/updateUser', {userId: {password: password , id: userId.id} })
+        .patch('/admin/updateUser',{ userId: {password: password , id: userId.id} })
         .then((response) => {
           console.log(response.data.status);
         })
         .catch((err) => {
+          localStorage.removeItem('user');
+          setUser(null);
+          localStorage.removeItem('token');
+          setShowProfile(false);
           console.log(err);
         });
     };
@@ -39,19 +44,25 @@ export function Profile({setUser}){
     };
 
     useEffect(()=>{
+
       async function fetchUserDetails(userId){
         await axios
-          .get('http://localhost:5000/api/user/userDetails', {
-            params: { userId: userId.id }
+          .get('/user/userDetails', {
+            params: { userId: userId.id },
           })
           .then((response) => {
-            setUserDetails(response.data.userDetails[0]);
-            setPassword(response.data.userDetails[0].password);
+            setUserDetails(response.data.userDetails);
+            setPassword(response.data.userDetails.password);
           })
           .catch((err) => {
+            localStorage.removeItem('user');
+            setUser(null);
+            localStorage.removeItem('token');
+            setShowProfile(false);
             console.log(err);
           });
       }
+
       fetchUserDetails(userId)
     },[userId])
   
@@ -69,8 +80,8 @@ export function Profile({setUser}){
   
           <div className="profileSectionTitle">Professional Information</div>
           <div className="profileInfoRow"><div className="profileLabel">Position:</div><div className="profileValue">{userDetails.position}</div></div>
-          <div className="profileInfoRow"><div className="profileLabel">Reporting Manager:</div><div className="profileValue">{userDetails.Manager}</div></div>
-          <div className="profileInfoRow"><div className="profileLabel">Manager ID:</div><div className="profileValue">{userDetails.reporting_manager_id}</div></div>
+          <div className="profileInfoRow"><div className="profileLabel">Reporting Manager:</div><div className="profileValue">{userDetails.Manager || 'N/A'}</div></div>
+          <div className="profileInfoRow"><div className="profileLabel">Manager ID:</div><div className="profileValue">{userDetails.reporting_manager_id || 'N/A'}</div></div>
   
           <div className="profileSectionTitle">Security</div>
           <div className="profileInfoRow profilePasswordRow">
@@ -95,6 +106,8 @@ export function Profile({setUser}){
           </div>
           <button className='logoutbtn' onClick={() => {
                     localStorage.removeItem('user');
+                    axios.defaults.headers.common['Authorization'] = '';
+                    localStorage.removeItem('token');
                     setUser(null);
                 }}>Logout</button>
         </div>

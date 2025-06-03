@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { fetchPendingRequest } from '../utils/pendingRequests'
 import { ReviewScreen } from '../components/reviewScreen';
 
@@ -14,7 +14,8 @@ export function RequestPending({user}){
 
   useEffect(() => {
     async function fetchpendingrequest(){
-        setPendingRequests(await fetchPendingRequest(user));
+
+      setPendingRequests(await fetchPendingRequest(user));
     }
     fetchpendingrequest()
     

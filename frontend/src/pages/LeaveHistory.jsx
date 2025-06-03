@@ -1,27 +1,25 @@
-// frontend/src/pages/LeaveHistory.js
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function LeaveHistory() {
+export default function LeaveHistory({ user }) {
   const [leaveHistory, setLeaveHistory] = useState([]);
   const [error, setError] = useState(null);
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
-  const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
     if (!user) return;
 
     axios
-      .get('http://localhost:5000/api/leave/history', {
-        params: { userId: user.id }
-      })
+      .get('/leave/history', {params: { userId: user.id }})
       .then((response) => {
         setLeaveHistory(response.data.history);
         setError(null);
       })
       .catch((err) => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
         setError('Failed to fetch leave history.');
         console.error(err);
       });
@@ -41,13 +39,13 @@ export default function LeaveHistory() {
 
   async function cancelRequest(id){
     await axios
-      .delete('http://localhost:5000/api/leave/deleteRequest', {
-        params: { lrId: id }
-      })
+      .delete('/leave/deleteRequest', {params: { lrId: id }})
       .then((response) => {
         console.log(response.data.status)
       })
       .catch((err) => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
         console.log(err);
       });
   }
@@ -57,7 +55,7 @@ export default function LeaveHistory() {
       {error && <p className="error">{error}</p>}
 
       <div className="table-wrapper">
-        {leaveHistory.length ==0 ? <>NO LEAVE REQUESTED</> : 
+        {leaveHistory.length === 0 ? <>NO LEAVE REQUESTED</> : 
         <table className="styled-table">
           <thead>
             <tr>
@@ -78,7 +76,7 @@ export default function LeaveHistory() {
                 <td>{index + 1}</td>
                 <td>{leave.leaveType}</td>
                 <td>{leave.description}</td>
-                <td>{ leave.status } <label for="file">({leave.steps_completed}/{leave.steps_required})</label><progress id='file' value={leave.steps_completed} max={leave.steps_required}></progress></td>
+                <td>{ leave.status } <label htmlFor="file">({leave.steps_completed}/{leave.steps_required})</label><progress id='file' value={leave.steps_completed} max={leave.steps_required}></progress></td>
                 <td>{leave.approved_by_name || leave.rejected_by_name || '-'}</td>
                 <td>{leave.rejection_reason || '-'}</td>
                 <td>{leave.no_of_days}</td>

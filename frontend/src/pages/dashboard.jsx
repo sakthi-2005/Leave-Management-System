@@ -17,39 +17,39 @@ export function Dashboard({user, setActive, setUser}){
   const [toastColor , setToastColor] = useState('limeGreen');
   let [view , setView] = useState('closed');
   let [reviewData,setReviewData] = useState({});
-  let [profile,setProfile] = useState(false);
 
 
   useEffect(()=>{
 
     const fetchLeaveBalances = async () => {
     await axios
-      .get('http://localhost:5000/api/leave/leave-balance', {
-        params: { userId: user.id }
-      })
+      .get('/leave/leave-balance', {params: { userId: user.id }})
       .then((response) => {
         setLeaveBalances(response.data.leaveBalances)
       })
       .catch((err) => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
         console.log(err);
       });
     }
 
     const fetchReportees = async () => {
       await axios
-        .get('http://localhost:5000/api/user/reportees', {
-          params: { userId: user.id }
-        })
+        .get('/user/reportees', {params: { userId: user.id }})
         .then((response) => {
           setPresent(response.data.reportees.filter(val=>val.id != null || (val.from_date > Date.now() || val.to_date < Date.now())));
           setAbsent(response.data.reportees.filter(val=>val.id != null && (val.from_date < Date.now() && val.to_date > Date.now())))
         })
         .catch((err) => {
+          localStorage.removeItem('user');
+          localStorage.removeItem('token');
           console.log(err);
         });
     }
 
     const fetchingrequests = async()=>{
+      console.log('Fetching pending requests' , await fetchPendingRequest(user));
       setPendingRequestes(await fetchPendingRequest(user));
     }
 
@@ -75,7 +75,7 @@ export function Dashboard({user, setActive, setUser}){
             {/* Breakdown as Cards */}
             <div className="breakdown-section">
               <div className="breakdown-grid">
-                {
+                {leaveBalances.length > 0  &&
                   leaveBalances.map((val,index)=>{
                     return (
                       <div className="breakdown-tile" key={index}>
@@ -90,6 +90,7 @@ export function Dashboard({user, setActive, setUser}){
             </div>
           </div>
 
+<br />
           <div className='requestleave-wrapper'>
               <button className='action-button request-leave' onClick={() => setIsRequestLeaveVisible(true)}>Request Leave</button>
           </div>
@@ -97,9 +98,10 @@ export function Dashboard({user, setActive, setUser}){
           {isRequestLeaveVisible && <RequestPage leaveBalances = {leaveBalances} setIsRequestLeaveVisible = {setIsRequestLeaveVisible} user={user} setToastVisible={setToastVisible} setToastMessage={setToastMessage} setToastColor={setToastColor}/>}
 
           {/* Pending Requests Section */}
+          {pendingRequestes.length > 0 && (
           <div className="requests-section">
             <h3>Waiting for You</h3>
-            {pendingRequestes.length > 3 && <a class="view-all-link" onClick={()=>setActive('requestPending')}>View All</a>}
+            {pendingRequestes.length > 3 && <a className="view-all-link" onClick={()=>setActive('requestPending')}>View All</a>}
             <ul className="request-list">
               {pendingRequestes.slice(0, 3).map((req, index) => (
                 <li key={index} className="request-item">
@@ -108,10 +110,11 @@ export function Dashboard({user, setActive, setUser}){
                 </li>
               ))}
             </ul>
-          </div>
+          </div>)}
           < ReviewScreen view={view} setView={setView} data={reviewData} userId={user}/>
 
           {/* Reportees Section */}
+          {(present.length != 0 || absent.length) != 0 &&
           <div className="reportees-section">
             <div className="reportees-list">
               <div className="reportees-group">
@@ -131,7 +134,7 @@ export function Dashboard({user, setActive, setUser}){
                 </ul>
               </div>
             </div>
-          </div>
+          </div>}
 
 
 

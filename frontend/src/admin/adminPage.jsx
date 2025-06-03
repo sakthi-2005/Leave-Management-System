@@ -14,6 +14,7 @@ export function Admin({setUser}) {
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [search, setSearch] = useState('');
   let [profile,setProfile] = useState(false);
+  const token = localStorage.getItem('token');
 
   const openUserModal = (user = null) => {
     setSelectedUser(user);
@@ -28,9 +29,7 @@ export function Admin({setUser}) {
   const saveUser = async(user,method) => {
     if(method == 'insert'){
       await axios
-        .post('http://localhost:5000/api/admin/addUser', {
-          params: { data: [user] }
-        })
+        .post('/admin/addUser', {params: { data: [user] }})
         .then((response) => {
           console.log(response.data.status);
         })
@@ -40,7 +39,7 @@ export function Admin({setUser}) {
       }
       else{
         await axios
-        .patch('http://localhost:5000/api/admin/updateUser', {userId: user })
+        .patch('/admin/updateUser', {userId: user })
         .then((response) => {
           console.log(response.data.status);
         })
@@ -53,9 +52,7 @@ export function Admin({setUser}) {
 
   const deleteUser = async(id) => {
     await axios
-    .delete('http://localhost:5000/api/admin/deleteUser', {
-      params: { Id: id }
-    })
+    .delete('/admin/deleteUser', {params: { Id: id }})
     .then((response) => {
       console.log(response.data.status);
     })
@@ -68,9 +65,7 @@ export function Admin({setUser}) {
   const saveLeave = async(leave,method) => {
     if(method == 'insert'){
       await axios
-      .post('http://localhost:5000/api/admin/addLeave', {
-        params: { data: leave }
-      })
+      .post('/admin/addLeave', {params: { data: leave }})
       .then((response) => {
         console.log(response.data.status);
       })
@@ -80,7 +75,7 @@ export function Admin({setUser}) {
     }
     else{
       await axios
-      .patch('http://localhost:5000/api/admin/updateLeave', { leaveId: leave })
+      .patch('/admin/updateLeave', { leaveId: leave })
       .then((response) => {
         console.log(response.data.status);
       })
@@ -93,9 +88,7 @@ export function Admin({setUser}) {
 
   const deleteLeave = async(id) => {
     await axios
-    .delete('http://localhost:5000/api/admin/deleteLeave', {
-      params: { Id: id }
-    })
+    .delete('/admin/deleteLeave', {params: { Id: id }})
     .then((response) => {
       console.log(response.data.status);
     })
@@ -144,8 +137,6 @@ export function Admin({setUser}) {
           <button className="admin-button" onClick={() => openUserModal()}>+ Add User</button>
         </div>
       </header>
-
-    
 
       <div className="admin-search">
         <input className="admin-search-input" placeholder="Search users..." value={search} onChange={(e) => setSearch(e.target.value)}/>

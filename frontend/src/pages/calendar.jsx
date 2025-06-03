@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import { useState,useEffect } from 'react';
 import axios from 'axios';
 
 
@@ -28,13 +28,13 @@ export function CalendarPage({ user }) {
 
     async function fetchuserLeaves(){
       await axios
-      .get('http://localhost:5000/api/leave/calendarLeaves', {
-        params: { userId: user.id }
-      })
+      .get('/leave/calendarLeaves', {params: { userId: user.id }})
       .then((response) => {
         setUserLeaves(response.data.leaves)
       })
       .catch((err) => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
         console.log(err);
       });
     }
@@ -42,13 +42,13 @@ export function CalendarPage({ user }) {
 
     async function fetchHolidays(){
       await axios
-      .get('http://localhost:5000/api/leave/holiday', {
-        params: { userId: user.id }
-      })
+      .get('/leave/holiday', {params: { userId: user.id }})
       .then((response) => {
         setHolidays(response.data.holidays)
       })
       .catch((err) => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
         console.log(err);
       });
     }
@@ -81,10 +81,13 @@ export function CalendarPage({ user }) {
         }
       }
 
+      let leaves = []
 
-      const leaves = userLeaves.filter(
-        (leave) => new Date(leave.from_date).toISOString().split('T')[0] <= dateStr && new Date(leave.to_date).toISOString().split('T')[0] >= dateStr && !isHoliday && !isWeekend
+      if(userLeaves != null && userLeaves.length != 0 ){
+        leaves = userLeaves.filter(
+          (leave) => new Date(leave.from_date).toISOString().split('T')[0] <= dateStr && new Date(leave.to_date).toISOString().split('T')[0] >= dateStr && !isHoliday && !isWeekend
       );
+    }
 
       let color = leaveColors.Default;
       if (leaves.length == 1) color = leaveColors[leaves[0].Type];

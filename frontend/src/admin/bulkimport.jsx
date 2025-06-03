@@ -5,6 +5,7 @@ import axios from 'axios';
 function BulkImport({onClose}) {
   const [parsedUsers, setParsedUsers] = useState([]);
   const [error, setError] = useState('');
+  const token = localStorage.getItem('token');
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -43,9 +44,7 @@ function BulkImport({onClose}) {
   const handleImport = async() => {
     if (parsedUsers.length > 0) {
       await axios
-      .post('http://localhost:5000/api/admin/addUser', {
-        params: { data: parsedUsers }
-      })
+      .post('/admin/addUser', {params: { data: parsedUsers }})
       .then((response) => {
         console.log(response.data.status);
         onClose()

@@ -14,7 +14,8 @@ export function ReviewScreen({view,setView,data,userId}){
   const handleAccept = async() => {
 
     try {
-      const response = await axios.patch('http://localhost:5000/api/leave/accept-request', {userId: userId, reqId: data.id});
+      const response = await axios.patch('/leave/accept-request', {userId: userId, reqId: data.id});
+      
       if(response.data.status === 'updated'){
         setToastVisible(true);
         setToastColor('green');
@@ -24,6 +25,8 @@ export function ReviewScreen({view,setView,data,userId}){
       }
       } catch (error) {
         console.error('Error:', error);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
         setToastVisible(true);
         setToastColor('red');
         setToastMessage('request failed!');
@@ -36,7 +39,8 @@ export function ReviewScreen({view,setView,data,userId}){
       return;
     }
     try {
-      const response = await axios.patch('http://localhost:5000/api/leave/reject-request', {userId: userId, reqId: data.id, reason: rejectionReason});
+      const response = await axios.patch('/leave/reject-request', {userId: userId, reqId: data.id, reason: rejectionReason });
+
       if(response.data.status === 'updated'){
         setToastVisible(true);
         setToastColor('green');
@@ -46,6 +50,8 @@ export function ReviewScreen({view,setView,data,userId}){
       }
       } catch (error) {
         console.error('Error:', error);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
         setToastVisible(true);
         setToastColor('red');
         setToastMessage('request failed!');

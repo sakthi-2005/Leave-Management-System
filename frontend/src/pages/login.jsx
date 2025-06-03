@@ -1,4 +1,3 @@
-// frontend/src/pages/Login.js
 import { useState } from 'react';
 import axios from 'axios';
 
@@ -9,10 +8,12 @@ export default function Login({ setUser }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/login', { email, password });
+      const res = await axios.post('/login', { email, password });
+      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
   
-      localStorage.setItem('user', JSON.stringify(res.data.user)); // ✅ persist login
-      setUser(res.data.user); // ✅ inform App
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+      localStorage.setItem('token', res.data.token);
+      setUser(res.data.user);
     } catch (err) {
       alert('Login failed: ' + err.response?.data?.message);
     }

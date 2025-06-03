@@ -21,16 +21,11 @@ const Position = new EntitySchema({
             inverseSide: "position",
         },
         leaveTypes: {
-            type: "many-to-many",
+            type: "one-to-many",
             target: "LeaveType",
             inverseSide: "position",
         },
-        leaveBalances: {
-            type: "one-to-many",
-            target: "LeaveBalance",
-            inverseSide: "position",
-        }
-    }
+    },
     });
 
-module.exports = Position;
+module.exports = { Position };

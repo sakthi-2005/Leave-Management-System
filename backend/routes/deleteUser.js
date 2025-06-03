@@ -1,7 +1,7 @@
 const express = require('express');
 const db = require('../db');
 const router = express.Router();
-const { UsersRepo } = require('../db');
+const { UserRepo } = require('../db');
 
 router.delete('/deleteUser', async (req, res) => {
 
@@ -9,7 +9,7 @@ router.delete('/deleteUser', async (req, res) => {
   if (!userId) return res.status(400).json({ error: 'Missing userId' });
 
   try {
-    await UsersRepo.delete({id:userId});
+    await UserRepo.delete({id:Number(userId)});
     // await db.query(`DELETE FROM users WHERE id = ?`,[userId]);
     
     res.json({ status: 'deleted' });

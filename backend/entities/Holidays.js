@@ -16,4 +16,4 @@ const Holidays = new EntitySchema({
     }
 });
 
-module.exports = Holidays;
+module.exports = { Holidays };

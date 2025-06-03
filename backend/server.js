@@ -1,10 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 
+// Middleware
+const authenticate = require('./middleware/authmiddleware');
+
+// routesPath
 const authRoutes = require('./routes/auth');
 const leaveBalanceRoutes = require('./routes/leaveBalance');
 const reportees = require('./routes/reportees');
@@ -26,58 +28,41 @@ const cancelRequest = require('./routes/cancelRequest');
 const deleteLeave = require('./routes/deleteLeave');
 const deleteuser = require('./routes/deleteUser');
 
+dotenv.config();
 const {initializeDatabase} = require('./db');
 initializeDatabase();
 
-dotenv.config(); // Load environment variables
 
 const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors()); // Enable CORS
-app.use(bodyParser.json()); // Parse JSON bodies
-app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// // Database Schema Execution
-// const executeSchema = async () => {
-//   try {
-//     const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
-//     const queries = schema.split(';').filter(q => q.trim());
-
-//     for (let query of queries) {
-//       await db.query(query);
-//     }
-
-//     console.log('Database schema created or verified successfully.');
-//   } catch (err) {
-//     console.error('Error executing schema.sql:', err);
-//   }
-// };
-
-// executeSchema();
 
 // Routes
-app.use('/api', authRoutes);
-app.use('/api/leave', leaveBalanceRoutes);
-app.use('/api/user',userDetails)
-app.use('/api/user',reportees);
-app.use('/api/leave',holidays);
-app.use('/api/leave',requestleave);
-app.use('/api/leave',pendingRequest);
-app.use('/api/leave',calenderLeave);
-app.use('/api/leave',history);
-app.use('/api/leave',acceptRequest);
-app.use('/api/leave',rejectRequest);
-app.use('/api/leave',cancelRequest);
-app.use('/api/admin',addUser);
-app.use('/api/admin',addLeave);
-app.use('/api/admin',allUser);
-app.use('/api/admin',allLeave);
-app.use('/api/admin',updateUser);
-app.use('/api/admin',updateLeave);
-app.use('/api/admin',deleteLeave);
-app.use('/api/admin',deleteuser);
+app.use('/api' , authRoutes);
+app.use('/api/leave', authenticate , leaveBalanceRoutes);
+app.use('/api/user', authenticate , userDetails)
+app.use('/api/user', authenticate , reportees);
+app.use('/api/leave', authenticate , holidays);
+app.use('/api/leave', authenticate , requestleave);
+app.use('/api/leave', authenticate , pendingRequest);
+app.use('/api/leave', authenticate , calenderLeave);
+app.use('/api/leave', authenticate , history);
+app.use('/api/leave', authenticate , acceptRequest);
+app.use('/api/leave', authenticate , rejectRequest);
+app.use('/api/leave', authenticate , cancelRequest);
+app.use('/api/admin', authenticate , addUser);
+app.use('/api/admin', authenticate , addLeave);
+app.use('/api/admin', authenticate , allUser);
+app.use('/api/admin', authenticate , allLeave);
+app.use('/api/admin', authenticate , updateUser);
+app.use('/api/admin', authenticate , updateLeave);
+app.use('/api/admin', authenticate , deleteLeave);
+app.use('/api/admin', authenticate , deleteuser);
 
 // app.use('')
 

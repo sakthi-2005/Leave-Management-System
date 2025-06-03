@@ -5,9 +5,17 @@ const { LeaveType } = require('./entities/LeaveType') ;
 const { LeaveBalance } = require('./entities/LeaveBalance') ;
 const { LeaveRequest } = require('./entities/LeaveRequest') ;
 const { Holidays } = require('./entities/Holidays') ;
-const { Positions } = require('./entities/Positions') ;
+const { Position } = require('./entities/Positions') ;
 
-dotenv.config();
+dotenv.config() ;
+
+
+console.log('Database configuration:', {
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.DB_USER,
+  database: process.env.DB_NAME,
+});
 
 const AppDataSource = new DataSource({
   type: 'mysql',
@@ -18,15 +26,22 @@ const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: false,
   logging: false, 
-  entities: [User, LeaveType, LeaveBalance, LeaveRequest , Holidays , Positions],
+  entities: [User, LeaveType, LeaveBalance, LeaveRequest , Holidays , Position,],
   migrations: ['src/migrations/**/*.ts'],
 });
 
 // Initialize the database connection
 const initializeDatabase = async () => {
   try {
+    if (AppDataSource.isInitialized) {
+      console.log('Database connection already initialized');
+      return;
+    }
     await AppDataSource.initialize();
     console.log('Database connection successfully established');
+
+    console.log(AppDataSource.entityMetadatas.map(e => e.name));
+
   } catch (error) {
     console.error('Error during database initialization:', error);
     process.exit(1);
@@ -38,6 +53,6 @@ const LeaveTypeRepo = AppDataSource.getRepository(LeaveType);
 const LeaveBalanceRepo = AppDataSource.getRepository(LeaveBalance);
 const LeaveRequestRepo = AppDataSource.getRepository(LeaveRequest);
 const HolidaysRepo = AppDataSource.getRepository(Holidays);
-const PositionsRepo = AppDataSource.getRepository(Positions);
+const PositionRepo = AppDataSource.getRepository(Position);
 
-module.exports = { initializeDatabase , UserRepo, LeaveTypeRepo, LeaveBalanceRepo, LeaveRequestRepo, HolidaysRepo, PositionsRepo };
+module.exports = { initializeDatabase , UserRepo, LeaveTypeRepo, LeaveBalanceRepo, LeaveRequestRepo, HolidaysRepo, PositionRepo };

@@ -11,7 +11,6 @@ const LeaveType = new EntitySchema({
         },
         name: {
         type: String,
-        nullable: false,
         },
         position_id: {
         type: Number,
@@ -37,7 +36,7 @@ const LeaveType = new EntitySchema({
         inverseSide: "leaveType",
         },
         position: {
-            type: "many-to-many",
+            type: "many-to-one",
             target: "Position",
             joinColumn: {
                 name: "position_id",
@@ -47,4 +46,4 @@ const LeaveType = new EntitySchema({
     },
     });
 
-module.exports = LeaveType;
+module.exports = { LeaveType };

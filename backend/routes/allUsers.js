@@ -1,5 +1,5 @@
 const express = require('express');
-const db = require('../db');
+const { UserRepo } = require('../db');
 const router = express.Router();
 
 router.get('/allUsers', async(req,res)=>{
@@ -7,12 +7,20 @@ router.get('/allUsers', async(req,res)=>{
     try {
         //const [rows] = await db.query(`select u.* , p.name as position from users u JOIN positions p ON u.role_id = p.id ORDER BY u.id ASC`);
 
-        const [rows] = await db.UserRepo
+        const rawData = await UserRepo
                       .createQueryBuilder('u')
-                      .innerJoin('u.role', 'p')
+                      .innerJoin('u.position', 'p')
                       .addSelect('p.name', 'position')
                       .orderBy('u.id', 'ASC')
                       .getRawMany();
+
+        const rows = rawData.map(row => {
+          const result = {};
+          for (const key in row) {
+            result[key.startsWith('u_') ? key.slice(2) : key] = row[key];
+          }
+          return result;
+        });
 
         res.json({ users: rows });
       } catch (err) {

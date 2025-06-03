@@ -1,12 +1,18 @@
 const cron = require('node-cron');
-const db = require('../db');
+const {LeaveBalanceRepo,LeaveTypeRepo} = require('../db');
 
 cron.schedule('0 0 1 * *', async () => {
   try {
-    const [types] = await db.query('SELECT id, monthly_allocation FROM leave_types');
-    for (const type of types) {
-      await db.query('UPDATE leave_balances SET balance = ? WHERE leave_type_id = ?', [type.monthly_allocation, type.id]);
-    }
+      const leaveTypes = await LeaveTypeRepo.find({ select: ['id', 'monthly_allocation'] });
+
+      for (const type of leaveTypes) {
+        await LeaveBalanceRepo
+          .createQueryBuilder()
+          .update()
+          .set({ balance: type.monthly_allocation })
+          .where("leave_type_id = :id", { id: type.id })
+          .execute();
+      }
     console.log('Leave balances reset successfully');
   } catch (err) {
     console.error('Error resetting leave balances:', err);

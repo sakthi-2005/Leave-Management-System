@@ -1,5 +1,5 @@
 const express = require('express');
-const db = require('../db');
+const { LeaveRequestRepo } = require('../db');
 const router = express.Router();
 
 router.patch('/reject-request', async (req, res) => {

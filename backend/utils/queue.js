@@ -7,7 +7,6 @@ const CHUNK_SIZE = 10;
 module.exports = async function queue(req,res){
     const data = req.body.params.data;
 
-
     if (!Array.isArray(data)) {
         return res.status(400).json({ error: 'Expected a JSON array' });
     }

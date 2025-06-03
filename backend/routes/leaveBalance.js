@@ -8,7 +8,7 @@ router.get('/leave-balance', async (req, res) => {
 
   try {
 
-    const result = await LeaveBalanceRepo
+    const rows = await LeaveBalanceRepo
                             .createQueryBuilder('lb')
                             .innerJoin('leave_types', 'lt', 'lb.leave_type_id = lt.id')
                             .select([
@@ -33,6 +33,7 @@ router.get('/leave-balance', async (req, res) => {
     
     res.json({ leaveBalances: rows });
   } catch (err) {
+    console.log(err)
     res.status(500).json({ error: 'Failed to fetch leave balance' });
   }
 });

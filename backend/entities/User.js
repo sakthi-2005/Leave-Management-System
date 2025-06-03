@@ -21,11 +21,9 @@ const User = new EntitySchema({
       type: String,
     },
     role_id: {
-      name: "role_id",
       type: Number,
     },
     reporting_manager_id: {
-      name: "manager_id",
       type: Number,
       nullable: true, 
     },
@@ -73,14 +71,14 @@ const User = new EntitySchema({
     leaveRejections: {
       type: "one-to-many",
       target: "LeaveRequest",
-      inverseSide: "rejectedBy",
+      inverseSide: "rejector",
     },
     leaveCurrentApprovals: {
       type: "one-to-many",
       target: "LeaveRequest",
-      inverseSide: "currentWaiting",
+      inverseSide: "currentApprover",
     },
   },
 });
 
-module.exports = User;
+module.exports = { User };

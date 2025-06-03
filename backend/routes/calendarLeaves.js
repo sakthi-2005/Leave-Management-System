@@ -15,7 +15,7 @@ router.get('/calendarLeaves', async (req, res) => {
                       .innerJoin('lr.leaveType', 'lt')
                       .addSelect('u.name', 'u_name')
                       .addSelect('lt.name', 'Type')
-                      .where('u.reporting_manager_id = :managerId', { managerId })
+                      .where('u.reporting_manager_id = :userId', { userId })
                       .andWhere('lr.status = :status', { status: 'approved' })
                       .getRawMany();
 

@@ -1,30 +1,35 @@
 const express = require('express');
-const db = require('../db');
+const bcrypt = require('bcrypt');
 const router = express.Router();
+const { UserRepo, PositionRepo , LeaveBalanceRepo } = require('../db');
 
 router.patch('/updateUser', async (req, res) => {
 
+
   const { userId } = req.body;
   if (!userId) return res.status(400).json({ error: 'Missing userId' });
-  console.log(userId)
 
   try {
 
-    const position = await PositionsRepo.findOne({
+    const position = await PositionRepo.findOne({
       select: ['id'],
       where: { name: userId.position },
     });
+
+    const hashedPassword = await bcrypt.hash(userId.password, 10);
+    userId.password = hashedPassword;
 
     await UserRepo.save({
       id: userId.id,
       name: userId.name,
       email: userId.email,
       password: userId.password,
-      reporting_manager_id: userId.ManagerId,
+      reporting_manager_id: userId.ManagerId || null,
       role_id: position.id,
       isAdmin: userId.isAdmin
     });
 
+    await LeaveBalanceRepo
     // let id;
     // const [ID] = await db.query(`select id from positions where name = ?`,[userId.position])
     // if(ID.length == 0){

@@ -9,12 +9,12 @@ const LeaveRequest = new EntitySchema({
             primary: true,
             generated: true,
         },
-        userId: {
+        user_id: {
             name: "user_id",
             type: Number,
             nullable: false,
         },
-        leaveTypeId: {
+        leave_type_id: {
             name: "leave_type_id",
             type: Number,
             nullable: false,
@@ -27,55 +27,47 @@ const LeaveRequest = new EntitySchema({
             type: String,
             default: "pending",
         },
-        stepsCompleted: {
-            name: "steps_completed",
+        steps_completed: {
             type: Number,
             default: 0,
         },
-        stepsRequired: {
-            name: "steps_required",
+        steps_required: {
             type: Number,
             default: 1,
         },
-        rejectionReason: {
+        rejection_reason: {
             type: String,
             nullable: true,
         },
-        createdAt: {
-            name: "created_at",
+        created_at: {
             type: Date,
             default: () => "CURRENT_TIMESTAMP",
         },
-        approvedAt: {
-            name: "approved_at",
+        updated_at: {
             type: Date,
             nullable: true,
         },
-        approvedBy: {
-            name: "approved_by",
+        approved_by: {
             type: Number,
             nullable: true,
         },
-        rejectedBy: {
-            name: "rejected_by",
+        rejected_by: {
             type: Number,
             nullable: true,
         },
-        currentWaiting: {
-            name: "current_waiting",
+        current_waiting: {
             type: Number,
             nullable: true,
         },
-        noOfDays: {
-            name: "no_of_days",
+        no_of_days: {
             type: Number,
             nullable: false,
         },
-        startDate: {
+        from_date: {
             type: Date,
             nullable: false,
         },
-        endDate: {
+        to_date: {
             type: Date,
             nullable: false,
         },
@@ -124,4 +116,4 @@ const LeaveRequest = new EntitySchema({
     },
 });
 
-module.exports = LeaveRequest;
+module.exports = { LeaveRequest };

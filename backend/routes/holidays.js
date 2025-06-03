@@ -12,6 +12,7 @@ router.get('/holiday', async (req, res) => {
     // const [rows] = await db.query(`select * from holidays`);
     res.json({ holidays: rows });
   } catch (err) {
+    console.log(err)
     res.status(500).json({ error: 'Failed to fetch holidays' });
   }
 });

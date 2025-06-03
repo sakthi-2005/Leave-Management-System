@@ -9,13 +9,11 @@ const LeaveBalance = new EntitySchema({
             primary: true,
             generated: true,
         },
-        userId: {
-            name: "user_id",
+        user_id: {
             type: Number,
             nullable: false,
         },
-        leaveTypeId: {
-            name: "leave_type_id",
+        leave_type_id: {
             type: Number,
             nullable: false,
         },
@@ -23,8 +21,7 @@ const LeaveBalance = new EntitySchema({
             type: Number,
             default: 0,
         },
-        monthlyAllocation: {
-            name: "monthly_allocation",
+        leave_taken: {
             type: Number,
             default: 0,
         },
@@ -50,4 +47,4 @@ const LeaveBalance = new EntitySchema({
     },
 });
 
-module.exports = LeaveBalance;
+module.exports = { LeaveBalance };

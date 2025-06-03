@@ -1,7 +1,6 @@
 const express = require('express');
-const db = require('../db');
 const router = express.Router();
-const { LeaveTypeRepo, positionRepo } = require('../db');
+const { LeaveTypeRepo, PositionRepo , UserRepo , LeaveBalanceRepo } = require('../db');
 
 router.post('/addLeave', async (req, res) => {
 
@@ -10,7 +9,7 @@ router.post('/addLeave', async (req, res) => {
 
   try {
 
-     const position = await positionRepo.findOneBy({ name: value.position });
+     const position = await PositionRepo.findOneBy({ name: value.position });
     if (!position) throw new Error('Position not found');
 
     const latest = await LeaveTypeRepo
@@ -29,6 +28,18 @@ router.post('/addLeave', async (req, res) => {
     });
 
     await LeaveTypeRepo.save(leaveType);
+
+    let users = await UserRepo.find({where: { role_id: position.id }})
+
+    for( const user of users) {
+      const leaveBalance = LeaveBalanceRepo.create({
+        user_id: user.id,
+        leave_type_id: nextId,
+        balance: value.days_allowed,
+        leave_taken: 0,
+      });
+      await LeaveBalanceRepo.save(leaveBalance);
+    }
 
     // let [Id] = await db.query(`SELECT id from positions where name = ?`,[value.position])
     // const [lId] = await db.query(`(select MAX(id) as id from leave_types)`)

@@ -1,5 +1,5 @@
 const express = require('express');
-const db = require('../db');
+const { LeaveRequestRepo } = require('../db');
 const router = express.Router();
 
 router.get('/history', async (req, res) => {
@@ -9,19 +9,28 @@ router.get('/history', async (req, res) => {
 
   try {
 
-    const rows = await db.LeaveRequestRepo
+    const rawData = await LeaveRequestRepo
                           .createQueryBuilder('lr')
-                          .leftJoinAndSelect('lr.approvedByUser', 'approver')
-                          .leftJoinAndSelect('lr.rejectedByUser', 'rejector') 
+                          .leftJoinAndSelect('lr.approver', 'approver')
+                          .leftJoinAndSelect('lr.rejector', 'rejector') 
                           .innerJoinAndSelect('lr.leaveType', 'lt')
                           .where('lr.user_id = :userId', { userId })
                           .select([
                             'lr',
-                            'approver.name',
-                            'rejector.name',
-                            'lt.name',
+                            'approver.name AS approver',
+                            'rejector.name AS rejector',
+                            'lt.name AS leaveType',
                           ])
                           .getRawMany();
+
+                          
+        const rows = rawData.map(row => {
+          const result = {};
+          for (const key in row) {
+            result[key.startsWith('lr_') ? key.slice(3) : key] = row[key];
+          }
+          return result;
+        });
 
 
   //   const [rows] = await db.query(` SELECT 

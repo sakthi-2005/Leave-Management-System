@@ -1,18 +1,15 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
+const express = require("express");
+const bcrypt = require("bcrypt");
 const router = express.Router();
-const { UserRepo, PositionRepo , LeaveBalanceRepo } = require('../db');
+const { UserRepo, PositionRepo, LeaveBalanceRepo } = require("../db");
 
-router.patch('/updateUser', async (req, res) => {
-
-
+router.patch("/updateUser", async (req, res) => {
   const { userId } = req.body;
-  if (!userId) return res.status(400).json({ error: 'Missing userId' });
+  if (!userId) return res.status(400).json({ error: "Missing userId" });
 
   try {
-
     const position = await PositionRepo.findOne({
-      select: ['id'],
+      select: ["id"],
       where: { name: userId.position },
     });
 
@@ -26,10 +23,10 @@ router.patch('/updateUser', async (req, res) => {
       password: userId.password,
       reporting_manager_id: userId.ManagerId || null,
       role_id: position.id,
-      isAdmin: userId.isAdmin
+      isAdmin: userId.isAdmin,
     });
 
-    await LeaveBalanceRepo
+    await LeaveBalanceRepo;
     // let id;
     // const [ID] = await db.query(`select id from positions where name = ?`,[userId.position])
     // if(ID.length == 0){
@@ -39,20 +36,20 @@ router.patch('/updateUser', async (req, res) => {
     //   id = ID[0].id
     // }
     // const [rows] = await db.query(` UPDATE users
-    //                                       SET 
+    //                                       SET
     //                                         name = COALESCE(? , name),
     //                                         email = COALESCE(? , email),
     //                                         password = COALESCE(? , password),
     //                                         reporting_manager_id = COALESCE(? , reporting_manager_id),
     //                                         role_id = COALESCE(? , role_id),
     //                                         isAdmin = COALESCE(? , isAdmin)
-    //                                       WHERE 
+    //                                       WHERE
     //                                           id = ?; `,[userId.name,userId.email,userId.password,userId.ManagerId,id,userId.isAdmin,userId.id]);
-    
-    res.json({ ststus: 'updated' });
+
+    res.json({ ststus: "updated" });
   } catch (err) {
-    console.log(err)
-    res.status(500).json({ error: 'Failed to update' });
+    console.log(err);
+    res.status(500).json({ error: "Failed to update" });
   }
 });
 

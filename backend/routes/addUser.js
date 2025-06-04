@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const queue = require('../utils/queue')
+const queue = require("../utils/queue");
 
-router.post('/addUser', queue);
+router.post("/addUser", queue);
 
 module.exports = router;

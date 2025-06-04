@@ -1,6 +1,5 @@
 const { EntitySchema } = require("typeorm");
 
-
 const User = new EntitySchema({
   name: "User",
   tableName: "users",
@@ -8,7 +7,7 @@ const User = new EntitySchema({
     id: {
       type: Number,
       primary: true,
-      generated: true, 
+      generated: true,
     },
     name: {
       type: String,
@@ -25,7 +24,7 @@ const User = new EntitySchema({
     },
     reporting_manager_id: {
       type: Number,
-      nullable: true, 
+      nullable: true,
     },
     isAdmin: {
       type: Boolean,
@@ -77,6 +76,16 @@ const User = new EntitySchema({
       type: "one-to-many",
       target: "LeaveRequest",
       inverseSide: "currentApprover",
+    },
+    userHistory: {
+      type: "one-to-many",
+      target: "RequestHistory",
+      inverseSide: "user",
+    },
+    managerHistory: {
+      type: "one-to-many",
+      target: "RequestHistory",
+      inverseSide: "manager",
     },
   },
 });

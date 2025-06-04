@@ -1,16 +1,15 @@
-const express = require('express');
-const db = require('../db');
+const express = require("express");
+const db = require("../db");
 const router = express.Router();
-const { PositionsRepo } = require('../db');
+const { PositionsRepo } = require("../db");
 
-router.patch('/updateLeave', async (req, res) => {
-
+router.patch("/updateLeave", async (req, res) => {
   const { leaveId } = req.body;
-  if (!leaveId) return res.status(400).json({ error: 'Missing userId' });
+  if (!leaveId) return res.status(400).json({ error: "Missing userId" });
 
   try {
     const position = await PositionsRepo.findOne({
-      select: ['id'],
+      select: ["id"],
       where: { name: leaveId.position },
     });
 
@@ -31,11 +30,11 @@ router.patch('/updateLeave', async (req, res) => {
     //                                       position_id = COALESCE(? , position_id)
     //                                   WHERE
     //                                       id = ?;`,[leaveId.name,leaveId.days_allowed,leaveId.conformation_steps,position.id,leaveId.id]);
-    
-    res.json({ status: 'updated' });
+
+    res.json({ status: "updated" });
   } catch (err) {
-    console.log(err)
-    res.status(500).json({ error: 'Failed to update leave' });
+    console.log(err);
+    res.status(500).json({ error: "Failed to update leave" });
   }
 });
 

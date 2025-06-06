@@ -1,7 +1,8 @@
 const { Queue } = require('bullmq');
 
-const userQueue = new Queue('addUser', { connection: {port: 6379, host: '127.0.0.1' ,maxRetriesPerRequest: null} });
-
+const userQueue = new Queue("addUser", {
+   connection: { port: process.env.REDIS_PORT || 6379 , host: process.env.REDIS_HOST || "127.0.0.1" , password: process.env.REDIS_PASSWORD, maxRetriesPerRequest: null },
+});
 const CHUNK_SIZE = 10;
 
 module.exports = async function queue(req,res){

@@ -101,7 +101,7 @@ export function Admin({setUser}) {
 
     async function fetchUsers(){
         await axios
-                .get('http://localhost:5000/api/admin/allUsers')
+                .get('admin/allUsers')
                 .then((response) => {
                     // console.log(response.data.leaves);
                     setUsers(response.data.users)
@@ -114,7 +114,7 @@ export function Admin({setUser}) {
 
     async function fetchLeaves(){
         await axios
-        .get('http://localhost:5000/api/admin/allLeaves')
+        .get('admin/allLeaves')
         .then((response) => {
             setLeaveTypes(response.data.leaves)
         })
